@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Probotx.io | Investment Certificate (Double in 25 Months)</title>
+<!-- Tailwind + Font Awesome -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- jsPDF library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .cert-card {
+        animation: fadeIn 0.4s ease-out;
+        background: linear-gradient(135deg, #ffffff 0%, #fffef7 100%);
+        border: 1px solid rgba(30,64,175,0.2);
+        box-shadow: 0 20px 35px -12px rgba(0,0,0,0.15);
+    }
+    .stamp-circle {
+        border-style: double;
+        background: radial-gradient(circle, rgba(255,245,215,0.95) 0%, rgba(255,235,190,0.8) 100%);
+        transition: transform 0.2s;
+    }
+    input:focus {
+        outline: none;
+        border-color: #1E40AF;
+        box-shadow: 0 0 0 3px rgba(30,64,175,0.2);
+    }
+    .return-badge {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border-left: 4px solid #f59e0b;
+    }
+    button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+</style>
+</head>
+<body class="bg-gray-50 font-sans p-4 md:p-6">
+
+<div class="max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-6">
+        <div class="inline-flex items-center gap-2 bg-white px-5 py-2 rounded-full shadow-sm border border-blue-100">
+            <i class="fas fa-chart-line text-blue-700"></i>
+            <span class="font-bold text-gray-700">Probotx.io</span>
+            <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">Double in 25 Months</span>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-extrabold mt-3">
+            <span class="bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">Investment Certificate</span>
+        </h1>
+        <p class="text-gray-600 text-sm mt-1">Fixed 25 Months Term • Principal Doubles at Maturity • Official Company Stamp</p>
+    </div>
+
+    <!-- Main 2-Column Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- LEFT: Investment Form -->
+        <div class="bg-white rounded-2xl shadow-lg p-5 border border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-800 border-l-4 border-blue-600 pl-3 mb-4">📋 Investor Details</h2>
+            <div class="grid grid-cols-1 gap-3">
+                <input id="username" type="text" placeholder="Full Name (as per PAN)" class="border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-300">
+                <input id="userid" type="text" placeholder="User ID / Client Code" class="border border-gray-300 p-3 rounded-xl">
+                <input id="mobile" type="tel" placeholder="Mobile Number (10 digit)" class="border border-gray-300 p-3 rounded-xl">
+                <input id="email" type="email" placeholder="Email Address" class="border border-gray-300 p-3 rounded-xl">
+                <input id="address" type="text" placeholder="Complete Address" class="border border-gray-300 p-3 rounded-xl">
+                <div class="grid grid-cols-2 gap-3">
+                    <input id="amount" type="number" placeholder="Investment Amount (₹)" class="border border-gray-300 p-3 rounded-xl">
+                    <input id="months" type="number" placeholder="Duration (Months)" value="25" class="border border-gray-300 p-3 rounded-xl bg-gray-50" readonly>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <input id="startDate" type="date" class="border border-gray-300 p-3 rounded-xl">
+                    <input id="expiryDate" type="text" placeholder="Maturity Date" readonly class="border border-gray-300 p-3 rounded-xl bg-gray-50 text-gray-600">
+                </div>
+            </div>
+            
+            <!-- Investment Terms Box -->
+            <div class="mt-4 p-3 return-badge rounded-xl text-sm">
+                <div class="flex items-center gap-2 text-amber-800 font-semibold">
+                    <i class="fas fa-chart-line text-amber-600"></i>
+                    <span>Investment Guarantee:</span>
+                </div>
+                <div class="text-gray-700 mt-1 text-xs space-y-1">
+                    <p>✓ <strong>25 Months Fixed Term</strong></p>
+                    <p>✓ <strong>Your investment DOUBLES at maturity</strong></p>
+                    <p>✓ Maturity Amount = Principal × 2</p>
+                    <p class="text-blue-600 font-medium">Example: Invest ₹25,000 → Get ₹50,000 after 25 months</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-3 mt-4">
+                <button id="generateBtn" class="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-5 rounded-xl transition shadow-md flex items-center justify-center gap-2">
+                    <i class="fas fa-file-pdf"></i> Generate & Download PDF
+                </button>
+                <button id="clearBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-5 rounded-xl transition flex items-center justify-center gap-2">
+                    <i class="fas fa-eraser"></i> Clear Form
+                </button>
+            </div>
+            <div class="text-xs text-gray-400 mt-3 text-center border-t pt-3">
+                <i class="fas fa-shield-alt"></i> PDF includes official Probotx.io stamp & maturity guarantee
+            </div>
+        </div>
+
+        <!-- RIGHT: Live Certificate Preview -->
+        <div id="previewContainer" class="hidden lg:block">
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-5 cert-card relative">
+                <div class="text-center border-b pb-3 mb-3">
+                    <h2 class="text-xl font-black tracking-tight text-[#1E40AF]">⚡ PROBOTX.IO</h2>
+                    <p class="text-xs text-gray-500 uppercase">Wealth & Investment Management</p>
+                    <h3 class="text-md font-bold mt-1 text-gray-700">FIXED TERM INVESTMENT CERTIFICATE</h3>
+                </div>
+                
+                <table class="w-full text-sm">
+                    <tbody>
+                        <tr class="border-b border-gray-100"><td class="py-1.5 font-bold w-1/3">Investor Name</td><td id="pName">—</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-1.5 font-bold">User ID</td><td id="pUserID">—</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-1.5 font-bold">Mobile</td><td id="pMobile">—</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-1.5 font-bold">Email</td><td id="pEmail">—</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-1.5 font-bold">Address</td><td id="pAddress">—</td></tr>
+                        <tr class="border-t border-gray-200"><td class="py-1.5 font-bold text-green-700">Investment Amount</td><td id="pAmount" class="font-bold text-green-700">—</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-1.5 font-bold">Term Duration</td><td id="pDuration">25 Months (Fixed)</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-1.5 font-bold">Start Date</td><td id="pStart">—</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-1.5 font-bold">Maturity Date</td><td id="pExpiry">—</td></tr>
+                        <tr class="bg-green-50"><td class="py-2 font-bold text-green-800 text-base">🎯 Maturity Amount (Principal × 2)</td><td id="pMaturityAmount" class="font-bold text-green-800 text-lg">—</td></tr>
+                    </tbody>
+                </table>
+                
+                <div class="mt-4 flex justify-between items-end border-t pt-3">
+                    <div>
+                        <p class="text-xs text-gray-500">Issued: <span id="pToday"></span></p>
+                        <div class="mt-1 text-xs">Authorised Signatory</div>
+                        <div class="w-28 h-px bg-gray-400 mt-1"></div>
+                    </div>
+                    <!-- Official Probotx Stamp -->
+                    <div class="stamp-circle w-24 h-24 rounded-full border-4 border-red-700/80 flex flex-col items-center justify-center shadow-md">
+                        <div class="text-center">
+                            <div class="text-[10px] font-black uppercase text-red-800">PROBOTX.IO</div>
+                            <div class="text-[7px] font-semibold text-red-700">AUTHORISED</div>
+                            <div class="text-[6px] font-mono">CORPORATE SEAL</div>
+                            <div class="w-6 h-px bg-red-500 mx-auto my-1"></div>
+                            <div class="text-[7px] font-bold text-red-800">✧ GUARANTEE ✧</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center text-[9px] text-gray-400 mt-3">Computer Generated • Valid with Company Stamp • Double Guarantee</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Preview Section -->
+    <div id="mobilePreviewWrapper" class="mt-6 lg:hidden hidden"></div>
+    
+    <!-- Toast Message -->
+    <div id="shareToast" class="fixed bottom-5 right-5 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg text-sm hidden transition-all z-50">
+        <i class="fas fa-check-circle mr-2"></i> PDF Downloaded Successfully!
+    </div>
+</div>
+
+<script>
+const { jsPDF } = window.jspdf;
+
+// Flag to prevent multiple PDF generations
+let isGeneratingPDF = false;
+
+// Calculate Maturity Amount = Principal × 2 (Double)
+function calculateMaturity(amount) {
+    let principal = parseFloat(amount) || 0;
+    let maturityAmount = principal * 2;
+    let profit = principal;
+    return {
+        maturityAmount: maturityAmount,
+        profit: profit,
+        totalReturnPercent: 100
+    };
+}
+
+// Calculate expiry date (25 months from start)
+function calculateExpiry() {
+    let start = document.getElementById("startDate").value;
+    if (start) {
+        let d = new Date(start);
+        if (!isNaN(d.getTime())) {
+            d.setMonth(d.getMonth() + 25);
+            let expiryStr = d.toISOString().split("T")[0];
+            document.getElementById("expiryDate").value = expiryStr;
+            return expiryStr;
+        }
+    }
+    document.getElementById("expiryDate").value = "";
+    return "";
+}
+
+// Update all preview fields
+function updatePreviewCalculations() {
+    let amount = parseFloat(document.getElementById("amount").value);
+    let start = document.getElementById("startDate").value;
+    let expiry = document.getElementById("expiryDate").value || calculateExpiry();
+    
+    let maturity = calculateMaturity(amount);
+    
+    const formatCurrency = (val) => {
+        if (isNaN(val) || val === 0) return "₹ 0";
+        return "₹ " + val.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+    
+    document.getElementById("pAmount").innerHTML = formatCurrency(amount);
+    document.getElementById("pMaturityAmount").innerHTML = formatCurrency(maturity.maturityAmount);
+    document.getElementById("pStart").innerText = start || "—";
+    document.getElementById("pExpiry").innerText = expiry || "—";
+    document.getElementById("pDuration").innerText = "25 Months (Fixed)";
+    
+    document.getElementById("pName").innerText = document.getElementById("username").value.trim() || "—";
+    document.getElementById("pUserID").innerText = document.getElementById("userid").value.trim() || "—";
+    document.getElementById("pMobile").innerText = document.getElementById("mobile").value.trim() || "—";
+    document.getElementById("pEmail").innerText = document.getElementById("email").value.trim() || "—";
+    document.getElementById("pAddress").innerText = document.getElementById("address").value.trim() || "—";
+    document.getElementById("pToday").innerText = new Date().toLocaleDateString('en-IN');
+}
+
+// Validation
+function validateForm() {
+    let name = document.getElementById("username").value.trim();
+    let mobile = document.getElementById("mobile").value.trim();
+    let email = document.getElementById("email").value.trim();
+    let amount = parseFloat(document.getElementById("amount").value);
+    let start = document.getElementById("startDate").value;
+    
+    if (!name) { alert("Please enter Investor Name"); return false; }
+    if (!/^\d{10}$/.test(mobile)) { alert("Mobile number must be exactly 10 digits"); return false; }
+    if (!email.includes("@") || !email.includes(".")) { alert("Please enter a valid email address"); return false; }
+    if (isNaN(amount) || amount <= 0) { alert("Investment amount must be greater than ₹0"); return false; }
+    if (!start) { alert("Please select Start Date"); return false; }
+    return true;
+}
+
+// Show preview on screen
+function showPreviewOnScreen() {
+    let desktopPreview = document.getElementById("previewContainer");
+    let mobileWrap = document.getElementById("mobilePreviewWrapper");
+    
+    if (desktopPreview) desktopPreview.classList.remove("hidden");
+    
+    if (mobileWrap) {
+        const originalCert = document.querySelector("#previewContainer .bg-white");
+        if (originalCert) {
+            const clone = originalCert.cloneNode(true);
+            mobileWrap.innerHTML = "";
+            mobileWrap.appendChild(clone);
+            mobileWrap.classList.remove("hidden");
+        }
+    }
+    updatePreviewCalculations();
+}
+
+// Generate PDF - ONLY ONCE
+function generatePDF() {
+    // Prevent multiple simultaneous PDF generations
+    if (isGeneratingPDF) {
+        console.log("PDF generation already in progress...");
+        return;
+    }
+    
+    if (!validateForm()) return;
+    
+    isGeneratingPDF = true;
+    const btn = document.getElementById("generateBtn");
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
+    btn.disabled = true;
+    
+    try {
+        calculateExpiry();
+        updatePreviewCalculations();
+        showPreviewOnScreen();
+        
+        // Gather data
+        let name = document.getElementById("username").value.trim();
+        let userid = document.getElementById("userid").value.trim() || "—";
+        let mobile = document.getElementById("mobile").value.trim();
+        let email = document.getElementById("email").value.trim();
+        let address = document.getElementById("address").value.trim();
+        let amount = parseFloat(document.getElementById("amount").value);
+        let startDate = document.getElementById("startDate").value;
+        let expiryDate = document.getElementById("expiryDate").value;
+        let today = new Date().toLocaleDateString('en-IN');
+        let maturity = calculateMaturity(amount);
+        
+        const formatCurr = (val) => "₹ " + val.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        
+        // Create PDF
+        const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+        const pageWidth = doc.internal.pageSize.getWidth();
+        
+        // Background & border
+        doc.setFillColor(255, 253, 245);
+        doc.rect(0, 0, pageWidth, 297, 'F');
+        doc.setDrawColor(30, 64, 175);
+        doc.setLineWidth(0.5);
+        doc.rect(10, 10, pageWidth - 20, 277);
+        doc.setDrawColor(212, 175, 55);
+        doc.setLineWidth(0.3);
+        doc.rect(12, 12, pageWidth - 24, 273);
+        
+        // Header
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(24);
+        doc.setTextColor(30, 64, 175);
+        doc.text("PROBOTX.IO", pageWidth / 2, 28, { align: "center" });
+        doc.setFontSize(11);
+        doc.setTextColor(100, 100, 120);
+        doc.text("Fixed Term Investment Certificate — Double in 25 Months", pageWidth / 2, 37, { align: "center" });
+        
+        doc.setFontSize(16);
+        doc.setTextColor(0, 0, 0);
+        doc.setFont("helvetica", "bold");
+        doc.text("INVESTMENT GUARANTEE CERTIFICATE", pageWidth / 2, 50, { align: "center" });
+        doc.line(50, 54, pageWidth - 50, 54);
+        
+        let y = 68;
+        const leftX = 25;
+        const rightX = 95;
+        
+        function addRow(label, value) {
+            doc.setFont("helvetica", "bold");
+            doc.text(label + ":", leftX, y);
+            doc.setFont("helvetica", "normal");
+            doc.text(String(value), rightX, y);
+            y += 8;
+        }
+        
+        addRow("Investor Name", name);
+        addRow("User ID", userid);
+        addRow("Mobile Number", mobile);
+        addRow("Email Address", email);
+        
+        // Address multiline
+        doc.setFont("helvetica", "bold");
+        doc.text("Address:", leftX, y);
+        doc.setFont("helvetica", "normal");
+        let addrLines = doc.splitTextToSize(address, 75);
+        doc.text(addrLines, rightX, y);
+        y += (addrLines.length * 5) + 4;
+        
+        addRow("Investment Amount", formatCurr(amount));
+        addRow("Term Duration", "25 Months (Fixed)");
+        addRow("Start Date", startDate);
+        addRow("Maturity Date", expiryDate);
+        y += 4;
+        
+        // Highlight Maturity Amount (DOUBLE)
+        doc.setFillColor(187, 247, 208);
+        doc.rect(leftX - 3, y - 4, pageWidth - leftX - 10, 12, 'F');
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.setTextColor(0, 100, 0);
+        doc.text("MATURITY AMOUNT (PRINCIPAL DOUBLED):", leftX, y);
+        doc.setFontSize(13);
+        doc.text(formatCurr(maturity.maturityAmount), rightX, y);
+        y += 12;
+        
+        doc.setFontSize(10);
+        doc.setTextColor(80, 80, 80);
+        doc.text(`Total Profit: ${formatCurr(maturity.profit)} (100% Return)`, leftX, y);
+        y += 8;
+        doc.text(`Issued Date: ${today}`, leftX, y + 4);
+        doc.text("Authorised Signatory", leftX, y + 14);
+        doc.line(leftX, y + 15, leftX + 35, y + 15);
+        
+        // Official Stamp (Probotx.io Mohar)
+        const stampX = pageWidth - 38;
+        const stampY = y + 10;
+        doc.setDrawColor(139, 0, 0);
+        doc.setFillColor(255, 245, 215);
+        doc.circle(stampX, stampY, 14, 'FD');
+        doc.setLineWidth(1);
+        doc.circle(stampX, stampY, 14, 'D');
+        doc.setLineWidth(0.6);
+        doc.circle(stampX, stampY, 11.5, 'D');
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(7);
+        doc.setTextColor(139, 0, 0);
+        doc.text("PROBOTX.IO", stampX, stampY - 3, { align: "center" });
+        doc.setFontSize(6);
+        doc.text("AUTHORISED", stampX, stampY + 1, { align: "center" });
+        doc.setFontSize(5.5);
+        doc.text("CORPORATE SEAL", stampX, stampY + 5, { align: "center" });
+        doc.setFontSize(6);
+        doc.text("✦ DOUBLE ✦", stampX, stampY + 9, { align: "center" });
+        
+        // Footer
+        doc.setFontSize(8);
+        doc.setTextColor(100);
+        doc.text("This certificate guarantees that the investment amount will DOUBLE after 25 months.", pageWidth / 2, y + 32, { align: "center" });
+        doc.text("Computer generated document • Valid with company stamp", pageWidth / 2, y + 38, { align: "center" });
+        
+        // Save PDF
+        const fileName = `Probotx_Double_Investment_${name.replace(/\s/g, '_')}_${Date.now()}.pdf`;
+        doc.save(fileName);
+        
+        // Show toast
+        const toast = document.getElementById("shareToast");
+        toast.classList.remove("hidden");
+        setTimeout(() => toast.classList.add("hidden"), 3000);
+        
+    } catch (error) {
+        console.error("PDF Generation Error:", error);
+        alert("Error generating PDF. Please try again.");
+    } finally {
+        // Reset flag and button after a short delay to ensure save completes
+        setTimeout(() => {
+            isGeneratingPDF = false;
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }, 500);
+    }
+}
+
+// Clear all fields
+function clearForm() {
+    // Cancel any ongoing PDF generation
+    if (isGeneratingPDF) {
+        alert("Please wait, PDF is being generated...");
+        return;
+    }
+    
+    document.querySelectorAll("input").forEach(inp => {
+        if (inp.id !== "months" && inp.type !== "button" && inp.id !== "generateBtn" && inp.id !== "clearBtn") {
+            inp.value = "";
+        }
+    });
+    document.getElementById("months").value = "25";
+    document.getElementById("expiryDate").value = "";
+    document.getElementById("startDate").value = "";
+    
+    // Reset preview
+    const placeholders = ["pName","pUserID","pMobile","pEmail","pAddress","pAmount","pMaturityAmount","pStart","pExpiry"];
+    placeholders.forEach(id => {
+        let el = document.getElementById(id);
+        if (el) el.innerText = "—";
+    });
+    document.getElementById("pAmount").innerHTML = "—";
+    document.getElementById("pMaturityAmount").innerHTML = "—";
+    document.getElementById("pToday").innerText = new Date().toLocaleDateString('en-IN');
+    
+    let preview = document.getElementById("previewContainer");
+    if (preview) preview.classList.add("hidden");
+    let mobileWrap = document.getElementById("mobilePreviewWrapper");
+    if (mobileWrap) {
+        mobileWrap.innerHTML = "";
+        mobileWrap.classList.add("hidden");
+    }
+}
+
+// Event listeners - properly attached to prevent multiple triggers
+document.getElementById("startDate").addEventListener("change", calculateExpiry);
+document.getElementById("amount").addEventListener("input", updatePreviewCalculations);
+
+// Attach button events (only once)
+const generateBtn = document.getElementById("generateBtn");
+const clearBtn = document.getElementById("clearBtn");
+
+// Remove any existing listeners by cloning and replacing (clean approach)
+const newGenerateBtn = generateBtn.cloneNode(true);
+const newClearBtn = clearBtn.cloneNode(true);
+generateBtn.parentNode.replaceChild(newGenerateBtn, generateBtn);
+clearBtn.parentNode.replaceChild(newClearBtn, clearBtn);
+
+newGenerateBtn.addEventListener("click", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    generatePDF();
+});
+
+newClearBtn.addEventListener("click", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    clearForm();
+});
+
+// Auto-update preview
+const inputFields = ["username","userid","mobile","email","address","amount","startDate"];
+inputFields.forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+        element.addEventListener("input", () => {
+            if (document.getElementById("username").value.trim() || document.getElementById("amount").value) {
+                showPreviewOnScreen();
+            }
+        });
+    }
+});
+
+// Initial setup
+document.getElementById("months").value = "25";
+document.getElementById("months").readOnly = true;
+window.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("pToday").innerText = new Date().toLocaleDateString('en-IN');
+    document.getElementById("previewContainer")?.classList.add("hidden");
+});
+</script>
+</body>
+</html>
